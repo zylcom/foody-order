@@ -12,9 +12,9 @@ async function upsert({ productSlug, quantity }) {
 
   return axios
     .put(
-      "/users/current/carts/items",
+      "/carts/items",
       { productSlug: result.productSlug, quantity: result.quantity },
-      { headers: { Authorization: getAccessToken() } }
+      { headers: { Authorization: "Bearer ".concat(getAccessToken()) } },
     )
     .then((response) => {
       cartStore.upsertItem(response.data.data);
@@ -29,13 +29,14 @@ async function upsert({ productSlug, quantity }) {
 
 async function deleteItem(itemProductSlug) {
   itemProductSlug = validate(productSlug, itemProductSlug);
+  const { cartStore } = allStore();
 
   return axios
-    .delete(`/users/current/carts/items/${itemProductSlug}`, {
-      headers: { Authorization: getAccessToken() },
+    .delete(`/carts/items/${itemProductSlug}`, {
+      headers: { Authorization: "Bearer ".concat(getAccessToken()) },
     })
-    .then((response) => {
-      return response;
+    .then(() => {
+      cartStore.deleteItem(itemProductSlug);
     });
 }
 
@@ -46,14 +47,25 @@ async function revalidateCart(cart) {
       { ...cart },
       {
         cache: false,
-        headers: {
-          Authorization: getAccessToken(),
-        },
-      }
+      },
     )
     .catch(() => {
       return { data: { data: { cartItems: [], totalPrice: 0 } } };
     });
 }
 
-export default { upsert, deleteItem, revalidateCart };
+async function clearCart() {
+  const { cartStore } = allStore();
+
+  return axios
+    .post(
+      "/carts/clear",
+      {},
+      { headers: { Authorization: "Bearer ".concat(getAccessToken()) } },
+    )
+    .then((response) => {
+      cartStore.setMyCart(response.data.data);
+    });
+}
+
+export default { upsert, clearCart, deleteItem, revalidateCart };

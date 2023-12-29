@@ -13,7 +13,7 @@ describe("ProductCard.vue Test", () => {
 
   it("should render 'RouterLink' component", () => {
     expect(wrapper.findComponent(RouterLinkStub).props().to).toBe(
-      `/menu/${product.slug}`
+      `/menu/${product.slug}`,
     );
   });
 

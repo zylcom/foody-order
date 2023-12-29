@@ -3,8 +3,23 @@ defineProps({
   path: String,
   pathName: String,
   icon: Object,
-  textActiveColor: String,
+  activeColor: String,
 });
+
+const strokeVariants = {
+  default: "stroke-gray-600",
+  "torii-red": "stroke-torii-red",
+  "chocobo-feather": "stroke-chocobo-feather",
+  "heirloom-hydrangea": "stroke-heirloom-hydrangea",
+  "venetian-nights": "stroke-venetian-nights",
+};
+const textVariants = {
+  default: "text-gray-600",
+  "torii-red": "text-torii-red",
+  "chocobo-feather": "text-chocobo-feather",
+  "heirloom-hydrangea": "text-heirloom-hydrangea",
+  "venetian-nights": "text-venetian-nights",
+};
 
 function navigation(navigateFunction, isActive) {
   isActive ? window.scrollTo(0, 0) : navigateFunction();
@@ -17,13 +32,18 @@ function navigation(navigateFunction, isActive) {
       class="flex flex-col items-center justify-end"
       @click="navigation(navigate, isActive)"
     >
-      <component :is="icon" :is-active="isActive" />
+      <component
+        :is="icon"
+        :isActive="isActive"
+        :class="strokeVariants[isActive ? activeColor : 'default']"
+      />
 
       <span
-        :class="isActive ? textActiveColor : 'text-dark-tone-ink/90'"
+        :class="textVariants[isActive ? activeColor : 'default']"
         class="text-[length:9px]"
-        >{{ pathName }}</span
       >
+        {{ pathName }}
+      </span>
     </button>
   </RouterLink>
 </template>

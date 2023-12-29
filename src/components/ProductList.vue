@@ -47,8 +47,6 @@ onMounted(async () => {
           :product="product"
           class="p-2"
           showLikesCountAndAverageRating
-          data-aos="zoom-in"
-          data-aos-once="true"
         />
 
         <ProductCardSkeleton

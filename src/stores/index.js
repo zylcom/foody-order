@@ -13,12 +13,12 @@ import { useTagStore } from "./tag";
 export const allStore = () => {
   return {
     authUserStore: useAuthUserStore(),
+    bestRatedProductsStore: useBestRatedProductsStore(),
     cartStore: useCartStore(),
     categoryStore: useCategoryStore(),
     errorStore: useErrorStore(),
     loadingStore: useLoadingStore(),
     orderStore: useOrderStore(),
-    bestRatedProductsStore: useBestRatedProductsStore(),
     productsStore: useProductsStore(),
     productDetailStore: useProductDetailStore(),
     reviewsStore: useReviewsStore(),

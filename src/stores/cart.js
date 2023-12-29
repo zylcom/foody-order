@@ -5,9 +5,12 @@ import {
   calculateTotalPrice,
   saveCartToLocalstorage,
 } from "../utils";
+import { useAuthUserStore } from "./authUser";
+import cartService from "../services/cart-service";
 
 export const useCartStore = defineStore("Cart", () => {
   const cart = ref({});
+  const authUserStore = useAuthUserStore();
   const getMyCart = computed(() => cart.value);
 
   function setMyCart(cartData) {
@@ -21,17 +24,21 @@ export const useCartStore = defineStore("Cart", () => {
   }
 
   function upsertItem(item) {
-    const updatedItems = [
-      ...cart.value.cartItems.filter(
-        (val) => val.productSlug !== item.productSlug
-      ),
-      { ...item },
-    ];
+    const copyItems = [...cart.value.cartItems];
+    const index = copyItems.findIndex(
+      (val) => val.productSlug === item.productSlug,
+    );
+
+    if (index === -1) {
+      copyItems.push(item);
+    } else {
+      copyItems[index] = item;
+    }
 
     const infoMessage =
-      cart.value.cartItems.length === updatedItems.length ? "Updated" : "Added";
+      cart.value.cartItems.length === copyItems.length ? "Updated" : "Added";
 
-    setMyCart({ cartItems: updatedItems });
+    setMyCart({ cartItems: copyItems });
 
     return infoMessage;
   }
@@ -40,18 +47,28 @@ export const useCartStore = defineStore("Cart", () => {
     const cart = getMyCart;
 
     return cart.value.cartItems.find(
-      (item) => item.product?.slug === productSlug
+      (item) => item.product?.slug === productSlug,
     );
   }
 
   function deleteItem(itemProductSlug) {
     const updatedItems = cart.value.cartItems.filter(
-      (item) => item.product.slug !== itemProductSlug
+      (item) => item.product.slug !== itemProductSlug,
     );
 
     setMyCart({ cartItems: updatedItems });
 
     return "Item deleted!";
+  }
+
+  async function $reset() {
+    const authUser = computed(() => authUserStore.authUser);
+
+    if (authUser.value) {
+      await cartService.clearCart();
+    }
+
+    setMyCart({ cartItems: [], totalPrice: 0 });
   }
 
   return {
@@ -61,5 +78,6 @@ export const useCartStore = defineStore("Cart", () => {
     getItem,
     setMyCart,
     upsertItem,
+    $reset,
   };
 });

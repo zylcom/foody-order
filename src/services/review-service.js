@@ -9,7 +9,8 @@ import {
 } from "../validation/review-validation";
 
 async function create({ productSlug, description, rating }) {
-  const { productDetailStore, productsStore } = allStore();
+  const { authUserStore, productDetailStore, productsStore } = allStore();
+  const authUser = computed(() => authUserStore.authUser);
   const product = computed(() => productDetailStore.getProduct);
 
   const result = validate(createReviewValidation, {
@@ -26,12 +27,12 @@ async function create({ productSlug, description, rating }) {
       productSlug: result.productSlug,
     },
     {
-      headers: { Authorization: getAccessToken() },
+      headers: { Authorization: "Bearer ".concat(getAccessToken()) },
       cache: {
         update: {
           [`product-${result.productSlug}`]: (
             productCache,
-            createReviewResponse
+            createReviewResponse,
           ) => {
             if (productCache.state !== "cached") {
               productService.get(result.productSlug);
@@ -39,11 +40,14 @@ async function create({ productSlug, description, rating }) {
               return "ignore";
             }
 
-            product.value.reviews.push(createReviewResponse.data.data);
+            product.value.reviews.push({
+              ...createReviewResponse.data.data,
+              user: authUser.value,
+            });
 
             const sumRating = product.value.reviews.reduce(
               (acc, review) => acc + review.rating,
-              0
+              0,
             );
 
             product.value.averageRating =
@@ -72,12 +76,13 @@ async function create({ productSlug, description, rating }) {
           },
         },
       },
-    }
+    },
   );
 }
 
 async function update({ productSlug, description, rating }) {
-  const { productDetailStore, productsStore } = allStore();
+  const { authUserStore, productDetailStore, productsStore } = allStore();
+  const authUser = computed(() => authUserStore.authUser);
   const product = computed(() => productDetailStore.getProduct);
 
   const result = validate(updateReviewValidation, {
@@ -94,12 +99,12 @@ async function update({ productSlug, description, rating }) {
       productSlug: result.productSlug,
     },
     {
-      headers: { Authorization: getAccessToken() },
+      headers: { Authorization: "Bearer ".concat(getAccessToken()) },
       cache: {
         update: {
           [`product-${result.productSlug}`]: (
             productCache,
-            updateReviewResponse
+            updateReviewResponse,
           ) => {
             if (productCache.state !== "cached") {
               productService.get(result.productSlug);
@@ -112,18 +117,21 @@ async function update({ productSlug, description, rating }) {
                 if (
                   review.username === updateReviewResponse.data.data.username
                 ) {
-                  return updateReviewResponse.data.data;
+                  return {
+                    ...updateReviewResponse.data.data,
+                    user: authUser.value,
+                  };
                 }
 
                 return review;
-              }
+              },
             );
 
             product.value.reviews = newReviews;
 
             const sumRating = newReviews.reduce(
               (acc, review) => acc + review.rating,
-              0
+              0,
             );
 
             product.value.averageRating =
@@ -152,7 +160,7 @@ async function update({ productSlug, description, rating }) {
           },
         },
       },
-    }
+    },
   );
 }
 

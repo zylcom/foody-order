@@ -26,6 +26,8 @@ async function onSubmitHandler() {
       password: password.value,
     });
 
+    console.log(result.data);
+
     saveAccessToken(result.data.data.token);
 
     await authUserStore.preload();
@@ -49,6 +51,8 @@ async function onSubmitHandler() {
 }
 
 watch(authUser, () => {
+  console.log(authUser.value);
+
   if (authUser.value) {
     route.push({ path: "/" });
   }

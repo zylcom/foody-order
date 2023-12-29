@@ -41,6 +41,8 @@ async function addToCartHandler() {
 
     $toast.success(`${result} success!`, { position: "top", duration: 1000 });
   } catch (error) {
+    console.log(error);
+
     $toast.error("Something went wrong!", { position: "top" });
   } finally {
     hideLoading();

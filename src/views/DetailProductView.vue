@@ -17,7 +17,7 @@ const { authUserStore, productDetailStore } = allStore();
 const authUser = computed(() => authUserStore.authUser);
 const product = computed(() => productDetailStore.product);
 const isLiked = computed(() =>
-  product.value.likes.some((val) => val.username === authUser.value?.username)
+  product.value.likes.some((val) => val.username === authUser.value?.username),
 );
 
 const { isLoading, showLoading, hideLoading } = useLoading();

@@ -31,7 +31,7 @@ onMounted(() => {});
 <template>
   <RouterLink
     :to="`/menu/${product.slug}`"
-    class="cursor-pointer shadow-md product-card"
+    class="product-card cursor-pointer shadow-md"
   >
     <div
       :class="{

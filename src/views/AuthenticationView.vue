@@ -29,15 +29,15 @@ function switchTab(newPath) {
     </nav>
 
     <div
-      class="fixed left-0 top-0 h-screen w-full after:absolute after:left-0 after:top-0 after:z-10 after:inline-block after:h-full after:w-full after:bg-gradient-to-b after:from-black/80 after:content-['']"
+      class="fixed left-0 top-0 w-full after:absolute after:left-0 after:top-0 after:z-10 after:inline-block after:h-full after:w-full after:bg-gradient-to-b after:from-black/80 after:content-['']"
     >
       <div
-        class="absolute top-0 h-0 w-full bg-explosive-grey pt-[66.7%] shadow-md"
+        class="absolute top-0 min-h-[100dvh] w-full bg-explosive-grey pt-[66.7%] shadow-md"
       >
         <img
           src="https://picsum.photos/480/320.webp"
           alt=""
-          class="absolute left-0 top-0 block w-full object-cover object-center"
+          class="absolute left-0 top-0 block min-h-[100dvh] w-full object-cover object-center"
           loading="lazy"
         />
       </div>
@@ -45,7 +45,7 @@ function switchTab(newPath) {
   </header>
 
   <div
-    class="relative z-10 mt-48 rounded-t-[20px] bg-white pb-4 pt-2 font-rubik md:mx-auto md:w-3/5 md:rounded-[20px]"
+    class="relative bottom-0 z-10 mt-48 w-full rounded-t-[20px] bg-white pb-4 pt-2 font-rubik md:mx-auto md:w-3/5 md:rounded-[20px]"
   >
     <div class="flex w-full justify-around text-sm">
       <button

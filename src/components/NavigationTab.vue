@@ -19,21 +19,21 @@ const authUser = computed(() => authUserStore.authUser);
       :path="route.path === '/' ? route.fullPath : '/'"
       pathName="Home"
       :icon="IconHome"
-      textActiveColor="text-chocobo-feather"
+      activeColor="chocobo-feather"
     />
 
     <NavigationButton
       :path="route.path === '/menu' ? route.fullPath : '/menu'"
       pathName="Menu"
       :icon="IconMenu"
-      textActiveColor="text-torii-red"
+      activeColor="torii-red"
     />
 
     <NavigationButton
       path="/history"
       pathName="History"
       :icon="IconHistory"
-      textActiveColor="text-heirloom-hydrangea"
+      activeColor="heirloom-hydrangea"
       v-if="authUser"
     />
 
@@ -41,7 +41,7 @@ const authUser = computed(() => authUserStore.authUser);
       path="/settings"
       pathName="More"
       :icon="IconDotsHorizontal"
-      textActiveColor="text-venetian-nights"
+      activeColor="venetian-nights"
     />
   </nav>
 </template>

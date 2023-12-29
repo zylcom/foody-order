@@ -27,7 +27,20 @@ async function updateReviewHandler({ description, rating, productSlug }) {
 
     $toast.success("Review updated", { position: "top" });
   } catch (error) {
-    $toast.error("Something went wrong!", { position: "top" });
+    if (error.response.data.errors === "jwt expired") {
+      $toast.error("Your session has ended. Please re-login.", {
+        position: "top",
+        dismissible: true,
+        onDismiss: () => {
+          window.location.reload();
+        },
+      });
+    } else {
+      $toast.error(
+        "Something went wrong. Please try again or reload the page.",
+        { position: "top" },
+      );
+    }
   } finally {
     toggleModalBox();
   }

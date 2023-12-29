@@ -16,5 +16,5 @@ export const useBestRatedProductsStore = defineStore(
     }
 
     return { foods, drinks, setDrinks, setFoods };
-  }
+  },
 );

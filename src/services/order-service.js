@@ -2,41 +2,57 @@ import validate from "../validation/validation";
 import { axios, getAccessToken, getGuestUserId } from "@/utils";
 import { useOrderStore } from "@/stores/order";
 import { orderIdValidation } from "../validation/order-validation";
+import { allStore } from "../stores";
 
-async function create(cart) {
-  const authToken = getAccessToken();
+const accessToken = getAccessToken();
+
+async function create(payload) {
   const guestUserId = getGuestUserId();
+  const { authUserStore } = allStore();
 
   return axios
-    .post(`/orders${guestUserId ? "?guest_uid=" + guestUserId : ""}`, cart, {
-      headers: { Authorization: authToken },
+    .post(`/orders${guestUserId ? "?guest_uid=" + guestUserId : ""}`, payload, {
+      headers: {
+        Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
+      },
     })
     .then(async (response) => {
-      if (response.status === 200) {
-        return await checkout(response.data.data.id, cart);
+      if (response.status === 201) {
+        return await checkout(response.data.data);
       }
 
       return response;
+    })
+    .catch(() => {
+      authUserStore.preload();
     });
 }
 
-async function checkout(orderId, cart) {
-  orderId = validate(orderIdValidation, orderId);
-  const authToken = getAccessToken();
+async function checkout(order) {
+  const orderId = validate(orderIdValidation, order.id);
   const guestUserId = getGuestUserId();
+  const { authUserStore } = allStore();
 
-  return axios.post(
-    `/orders/checkout?id=${orderId}${
-      guestUserId ? "&guest_uid=" + guestUserId : ""
-    }`,
-    cart,
-    { headers: { Authorization: authToken } }
-  );
+  return axios
+    .post(
+      `/orders/checkout?id=${orderId}${
+        guestUserId ? "&guest_uid=" + guestUserId : ""
+      }`,
+      {},
+      {
+        headers: {
+          Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
+        },
+      },
+    )
+    .then((response) => ({ transactionToken: response.data.data, order }))
+    .catch(() => {
+      authUserStore.preload();
+    });
 }
 
 async function get(orderId) {
   const orderStore = useOrderStore();
-  const authToken = getAccessToken();
   const guestUserId = getGuestUserId();
 
   orderId = validate(orderIdValidation, orderId);
@@ -44,10 +60,14 @@ async function get(orderId) {
   return axios
     .get(
       `/orders/${orderId}${guestUserId ? "?guest_uid=" + guestUserId : ""}`,
-      { headers: { Authorization: authToken } }
+      {
+        headers: {
+          Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
+        },
+      },
     )
     .then((response) => {
-      orderStore.set(response.data.data);
+      orderStore.setOrderDetails(response.data.data);
 
       return response;
     });
@@ -62,7 +82,7 @@ async function cancel(orderId) {
     .post(
       `/orders/${orderId}/cancel`,
       {},
-      { headers: { Authorization: getAccessToken() } }
+      { headers: { Authorization: accessToken } },
     )
     .then((response) => {
       console.log(response.data);

@@ -17,7 +17,7 @@ const category = computed(() => props.category);
 const bestRatedProducts = computed(() =>
   category.value === "food"
     ? bestRatedProductsStore.foods
-    : bestRatedProductsStore.drinks
+    : bestRatedProductsStore.drinks,
 );
 const { isLoading, showLoading, hideLoading } = useLoading();
 

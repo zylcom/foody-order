@@ -3,17 +3,17 @@ import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useToast } from "vue-toast-notification";
 import BackButton from "@/components/BackButton.vue";
-import LoadingSpinner from "@/components/LoadingSpinner.vue";
 import orderService from "@/services/order-service";
 import { allStore } from "@/stores";
 import { formatDateToLocaleId, formatNumberToIDR } from "@/utils";
 import { useHideOnScroll } from "@/composables/useHideOnScroll";
 import { useLoading } from "@/composables/useLoading";
+import IconHome from "../components/icons/IconHome.vue";
 
 const route = useRoute();
 const $toast = useToast();
 const { orderStore } = allStore();
-const order = computed(() => orderStore.order);
+const order = computed(() => orderStore.orderDetails);
 const orderId = route.params.id;
 const navElement = ref(null);
 const { isLoading, showLoading, hideLoading } = useLoading();
@@ -27,29 +27,36 @@ useHideOnScroll(navElement);
 
 async function checkout() {
   showFetching();
+  window.snap.show();
 
   try {
-    const result = await orderService.checkout(orderId);
+    const result = await orderService.checkout(order.value);
 
-    if (result.data.data.url) {
-      $toast.success("You will be redirect to payment form in 3 seconds!", {
-        position: "top",
-      });
+    window.snap.pay(result.transactionToken, {
+      onSuccess: function (result) {
+        console.log(result);
+        console.log("success");
 
-      setTimeout(() => {
-        window.location.replace(result.data.data.url);
-      }, 3000);
-    }
+        window.location.href = `/payment/${result.transaction_id}`;
+      },
+      onError: function () {
+        console.log("payment error. Try again later.");
+      },
+      onPending: () => {},
+      onClose: () => {},
+    });
   } catch (error) {
+    window.snap.hide();
+
     $toast.error("Oops something went wrong!", { position: "top" });
   } finally {
     hideFetching();
   }
 }
 
-async function cancel() {
+async function cancelOrder() {
   const confirmResponse = confirm(
-    "Are you sure want to cancel the order? It will canceled permanently!"
+    "Are you sure want to cancel the order? It's can't be undone!",
   );
 
   showFetching();
@@ -73,7 +80,7 @@ onMounted(async () => {
   try {
     await orderService.get(orderId);
   } catch (error) {
-    error;
+    console.log(error);
   } finally {
     hideLoading();
   }
@@ -81,58 +88,52 @@ onMounted(async () => {
 </script>
 
 <template>
-  <header class="inline">
+  <header class="bg-cloud-break">
     <nav
-      class="fixed top-0 z-30 flex w-full justify-between px-6 pb-3 pt-5 backdrop-blur-md transition-all duration-500"
+      class="fixed top-0 z-50 flex w-full items-center justify-between bg-cloud-break px-6 pb-2 pt-3 shadow transition-all duration-500"
       ref="navElement"
     >
       <BackButton />
+
+      <h1 class="text-2xl font-medium">Your Order</h1>
+
+      <RouterLink to="/">
+        <IconHome class="h-7 w-7 stroke-torii-red" />
+      </RouterLink>
     </nav>
   </header>
 
-  <LoadingSpinner v-show="isFetching" />
-
   <main
-    class="flex min-h-screen items-center justify-center py-14"
+    class="mx-auto flex min-h-[100dvh] max-w-md items-center justify-center py-14"
     v-if="!isLoading"
   >
-    <div class="mx-4 w-full rounded-3xl bg-white px-6 pt-8" v-if="order">
-      <p class="text-[0.65rem] leading-[0] text-blood-moon">
+    <div
+      class="mx-4 w-full rounded-3xl bg-white px-6 pt-8 shadow-md"
+      v-if="order"
+    >
+      <span class="block text-[0.65rem] leading-[0] text-blood-moon">
         ID# {{ orderId }}
-      </p>
-      <span class="text-[0.65rem]">
-        {{ formatDateToLocaleId({ date: Date.now(), showTime: true }) }}
       </span>
 
-      <h2
-        class="my-4 text-center text-sm font-medium text-blood-moon"
-        v-if="order.status === 'uncomplete'"
-      >
-        Your order is uncomplete! Checkout to complete the order.
+      <span class="text-[0.65rem]">
+        {{ formatDateToLocaleId({ date: order.createdAt, showTime: true }) }}
+      </span>
+
+      <h2 class="my-4 text-center text-sm font-medium text-blood-moon">
+        {{
+          order.status === "uncomplete" || order.status === "pending"
+            ? `Your order is ${order.status}! Checkout to complete the order.`
+            : order.status === "canceled"
+              ? "Your order is canceled!."
+              : "Your order is on its way!"
+        }}
       </h2>
 
-      <h2
-        class="my-4 text-center text-sm font-medium text-blood-moon"
-        v-else-if="order.status === 'canceled'"
-      >
-        Your order is canceled!.
-      </h2>
-
-      <h2 class="my-4 text-center text-sm font-medium text-blood-moon" v-else>
-        Your order is on its way!
-      </h2>
-
-      <img
-        class="mx-auto w-4/5"
-        src="../assets/images/order_uncomplete.svg"
-        alt=""
-        v-if="order.status === 'canceled'"
-      />
       <img
         class="mx-auto w-4/5"
         src="../assets/images/order_success.svg"
         alt=""
-        v-else-if="order.status === 'complete'"
+        v-if="order.status === 'success'"
       />
       <img
         class="mx-auto w-4/5"
@@ -147,43 +148,60 @@ onMounted(async () => {
         v-else
       />
 
-      <p class="mt-4 font-rubik">Here's your order items</p>
+      <span class="mt-4 block font-rubik">Here's your order items</span>
 
-      <ul class="my-4 max-h-60 overflow-y-auto">
+      <ul class="mt-4 max-h-60 overflow-y-auto">
         <li
-          class="flex w-full items-center gap-x-4 border-b border-dashed py-2 text-sm"
+          class="grid w-full grid-cols-6 items-center gap-x-4 border-b border-dashed py-2 text-sm hover:bg-mercury"
           v-for="item in order.items"
           :key="item.id"
         >
-          <div class="flex w-full justify-between gap-x-2 overflow-x-hidden">
-            <p class="truncate">{{ item.product.name }}</p>
+          <RouterLink
+            class="col-span-3 truncate"
+            :to="'/menu/' + item.productSlug"
+            :title="item.productName"
+          >
+            {{ item.productName }}
+          </RouterLink>
 
-            <span class="mr-4 whitespace-nowrap">Qty: {{ item.quantity }}</span>
-          </div>
+          <span class="mr-4 whitespace-nowrap">Qty: {{ item.quantity }}</span>
 
-          <span>
+          <span
+            class="col-span-2 overflow-hidden truncate text-right font-medium"
+          >
             {{ formatNumberToIDR(item.quantity * item.product.price) }}
           </span>
         </li>
       </ul>
 
-      <div class="flex justify-end gap-x-4 text-sm font-medium">
-        <span>Total: </span>
-        <span>{{ formatNumberToIDR(order.subTotal) }}</span>
+      <div
+        class="mb-4 flex w-full items-center justify-between gap-x-4 border-b border-dashed py-2 text-sm"
+      >
+        <span class="truncate">Delivery Cost</span>
+
+        <span class="font-medium">
+          {{ formatNumberToIDR(order.shipment.cost) }}
+        </span>
+      </div>
+
+      <div class="flex justify-end gap-x-2 text-sm">
+        <span class="whitespace-nowrap uppercase">Total :</span>
+        <span class="font-medium">
+          {{ formatNumberToIDR(order.total) }}
+        </span>
       </div>
 
       <div class="pb-2 pt-5">
         <div
           class="my-4 flex justify-evenly gap-x-4"
-          v-if="order.status !== 'canceled'"
+          v-if="order.status !== 'success'"
         >
           <button
             class="rounded bg-transparent p-1 font-medium uppercase tracking-wider text-chilled-chilly transition-all hover:scale-110"
-            @click="cancel()"
+            @click="cancelOrder()"
             :disabled="isFetching"
-            v-if="order.status === 'uncomplete'"
           >
-            CANCEL
+            Cancel
           </button>
 
           <button
@@ -196,16 +214,15 @@ onMounted(async () => {
             "
             :disabled="isFetching"
             @click="checkout()"
-            v-if="order.status === 'uncomplete'"
           >
             Checkout
           </button>
         </div>
 
-        <p class="pt-3 text-center text-[0.65rem]">
+        <span class="block pt-3 text-center text-[0.65rem]">
           Have any troubles? Please contact
-          <span class="text-seljuk-blue">the support</span>
-        </p>
+          <a href="#" class="text-seljuk-blue hover:underline">our support</a>
+        </span>
       </div>
     </div>
 

@@ -9,7 +9,7 @@ const axios = setupCache(
     headers: {
       "Content-Type": "application/json",
     },
-  })
+  }),
 );
 
 function clearKeyword(keyword) {

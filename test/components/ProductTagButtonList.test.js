@@ -10,13 +10,13 @@ describe("ProductTagButtonList.vue Test", () => {
 
   it("should render 'ProductTagButton' component", () => {
     expect(wrapper.findComponent("product-tag-button-stub").props().tag).toBe(
-      "All"
+      "All",
     );
   });
 
   it("should render 'ProductTagButton' component with class 'text-red-500' if button active", () => {
     expect(
-      wrapper.findComponent("product-tag-button-stub").classes()
+      wrapper.findComponent("product-tag-button-stub").classes(),
     ).toContain("text-red-500");
   });
 

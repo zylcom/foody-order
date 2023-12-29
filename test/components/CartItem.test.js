@@ -20,10 +20,8 @@ describe("CartItem.vue Test", () => {
     props: { product, quantity, cartItemId },
   });
 
-  it("should pass product data same as props in ProductCard component", () => {
-    expect(
-      wrapper.findComponent("product-card-stub").props().product
-    ).toStrictEqual(product);
+  it("should render quantity input component", () => {
+    expect(wrapper.findComponent("quantity-input-stub").exists()).toBe(true);
   });
 
   it("should call 'removeItemHandler' when button is clicked", async () => {

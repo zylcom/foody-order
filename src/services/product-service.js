@@ -42,7 +42,7 @@ async function infinite({ category, name, tag, size, cursor }) {
     .get(
       `/products?name=${result.name}&category=${result.category}&tag=${
         result.tag
-      }&size=${result.size}${result.cursor ? "&cursor=" + result.cursor : ""}`
+      }&size=${result.size}${result.cursor ? "&cursor=" + result.cursor : ""}`,
     )
     .then((response) => {
       productsStore.set(response.data);
@@ -84,7 +84,7 @@ async function like(productSlug) {
       `/products/${productSlug}/like`,
       {},
       {
-        headers: { Authorization: getAccessToken() },
+        headers: { Authorization: "Bearer ".concat(getAccessToken()) },
         cache: {
           update: {
             [`product-${productSlug}`]: (productCache, likeResponse) => {
@@ -115,7 +115,7 @@ async function like(productSlug) {
             },
           },
         },
-      }
+      },
     )
     .then((response) => response);
 }
@@ -129,7 +129,7 @@ async function neutralizeLikeProduct(productSlug) {
 
   return axios
     .delete(`/products/${productSlug}/like`, {
-      headers: { Authorization: getAccessToken() },
+      headers: { Authorization: "Bearer ".concat(getAccessToken()) },
       cache: {
         update: {
           [`product-${productSlug}`]: (productCache, likeResponse) => {
@@ -140,7 +140,7 @@ async function neutralizeLikeProduct(productSlug) {
             }
 
             product.value.likes = product.value.likes.filter(
-              (val) => val.username !== likeResponse.data.data.username
+              (val) => val.username !== likeResponse.data.data.username,
             );
 
             const newProducts = products.value.map((val) => {

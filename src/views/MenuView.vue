@@ -15,7 +15,7 @@ const route = useRoute();
 const router = useRouter();
 const { categoryStore, tagStore } = allStore();
 const currentCategory = computed(
-  () => route.query.category || categoryStore.category
+  () => route.query.category || categoryStore.category,
 );
 const categories = computed(() => categoryStore.categoryList);
 const tag = computed(() => route.query.tag || tagStore.tag);

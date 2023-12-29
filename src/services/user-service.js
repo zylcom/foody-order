@@ -21,32 +21,24 @@ async function register({ name, username, passwordForm, phonenumberForm }) {
       phonenumberForm: result.phonenumberForm,
       password: result.passwordForm.password,
     },
-    { cache: false }
+    { cache: false },
   );
 }
 
 async function getMyProfile() {
   return await axios
     .get("/users/current", {
-      headers: { Authorization: getAccessToken() },
-    })
-    .then((response) => {
-      if (response.status === 200 && response.data.data.username) {
-        localStorage.removeItem("guest_uid");
-
-        return {
-          isLoggedIn: true,
-          userPayload: response.data.data,
-        };
-      } else if (response.status === 200 && response.data.data.guestUserId) {
-        return { isLoggedIn: false, userPayload: response.data.data };
-      } else {
-        return { isLoggedIn: false, userPayload: null };
-      }
+      headers: {
+        Authorization: "Bearer ".concat(getAccessToken()),
+      },
     })
     .catch(() => {
-      return { isLoggedIn: false, userPayload: null };
+      return null;
     });
+}
+
+async function createGuestUser() {
+  return await axios.get("/users/guest").catch(() => null);
 }
 
 async function login(data) {
@@ -58,8 +50,8 @@ async function login(data) {
       username: result.username,
       password: result.password,
     },
-    { cache: false }
+    { cache: false },
   );
 }
 
-export default { register, getMyProfile, login };
+export default { createGuestUser, register, getMyProfile, login };

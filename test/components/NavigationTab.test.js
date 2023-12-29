@@ -6,7 +6,7 @@ describe("NavigationTab.vue Test", () => {
 
   it("should render 'NavigationButton' component", () => {
     expect(wrapper.findComponent("navigation-button-stub").isVisible()).toBe(
-      true
+      true,
     );
   });
 });

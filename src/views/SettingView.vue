@@ -21,6 +21,8 @@ function logout() {
   setTimeout(() => {
     authUserStore.$reset();
 
+    window.location.reload();
+
     hideLoading();
   }, 3000);
 }

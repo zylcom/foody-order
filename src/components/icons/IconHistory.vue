@@ -1,7 +1,3 @@
-<script setup>
-defineProps({ isActive: Boolean });
-</script>
-
 <template>
   <svg
     width="20"
@@ -9,109 +5,103 @@ defineProps({ isActive: Boolean });
     viewBox="0 0 20 20"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
+    v-bind="$attrs"
   >
     <path
       d="M19.0097 9.54545C19.0097 14.5309 14.8764 18.5909 9.75484 18.5909C4.63325 18.5909 0.5 14.5309 0.5 9.54545C0.5 4.55996 4.63325 0.5 9.75484 0.5C14.8764 0.5 19.0097 4.55996 19.0097 9.54545Z"
-      :stroke="isActive ? '#2A7DD2' : '#808080'"
+      v-bind="$attrs"
     />
     <line
       x1="10.4539"
       y1="0.779297"
       x2="10.4539"
       y2="2.72735"
-      :stroke="isActive ? '#2A7DD2' : '#808080'"
+      v-bind="$attrs"
     />
     <line
       y1="-0.5"
       x2="1.94805"
       y2="-0.5"
       transform="matrix(0 -1 -1 0 9.95386 18.3118)"
-      :stroke="isActive ? '#2A7DD2' : '#808080'"
+      v-bind="$attrs"
     />
     <line
       y1="-0.5"
       x2="1.95882"
       y2="-0.5"
       transform="matrix(-0.508158 0.861264 -0.87066 -0.491886 14.1345 2.33765)"
-      :stroke="isActive ? '#2A7DD2' : '#808080'"
+      v-bind="$attrs"
     />
     <line
       y1="-0.5"
       x2="1.95882"
       y2="-0.5"
       transform="matrix(0.508158 0.861264 0.87066 -0.491886 5.375 2.33765)"
-      :stroke="isActive ? '#2A7DD2' : '#808080'"
+      v-bind="$attrs"
     />
     <line
       y1="-0.5"
       x2="1.95882"
       y2="-0.5"
       transform="matrix(-0.508158 -0.861264 -0.87066 0.491886 14.1345 16.7532)"
-      :stroke="isActive ? '#2A7DD2' : '#808080'"
+      v-bind="$attrs"
     />
     <line
       y1="-0.5"
       x2="1.95882"
       y2="-0.5"
       transform="matrix(0.508158 -0.861264 0.87066 0.491886 5.375 16.7532)"
-      :stroke="isActive ? '#2A7DD2' : '#808080'"
+      v-bind="$attrs"
     />
     <line
       y1="-0.5"
       x2="1.98019"
       y2="-0.5"
       transform="matrix(-0.87066 0.491886 -0.508158 -0.861264 17.2522 5.45459)"
-      :stroke="isActive ? '#2A7DD2' : '#808080'"
+      v-bind="$attrs"
     />
     <line
       y1="-0.5"
       x2="1.98019"
       y2="-0.5"
       transform="matrix(0.87066 0.491886 0.508158 -0.861264 2.25757 5.45459)"
-      :stroke="isActive ? '#2A7DD2' : '#808080'"
+      v-bind="$attrs"
     />
     <line
       y1="-0.5"
       x2="1.98019"
       y2="-0.5"
       transform="matrix(-0.87066 -0.491886 -0.508158 0.861264 17.2522 13.6365)"
-      :stroke="isActive ? '#2A7DD2' : '#808080'"
+      v-bind="$attrs"
     />
     <line
       y1="-0.5"
       x2="1.98019"
       y2="-0.5"
       transform="matrix(0.87066 -0.491886 0.508158 0.861264 2.25757 13.6365)"
-      :stroke="isActive ? '#2A7DD2' : '#808080'"
-    />
-    <line
-      x1="18.7134"
-      y1="9.85059"
-      x2="16.7226"
-      y2="9.85059"
-      :stroke="isActive ? '#2A7DD2' : '#808080'"
+      v-bind="$attrs"
     />
     <line
       y1="-0.5"
       x2="1.99078"
       y2="-0.5"
       transform="matrix(-1 8.55463e-08 8.93404e-08 1 18.7134 9.74023)"
-      :stroke="isActive ? '#2A7DD2' : '#808080'"
+      v-bind="$attrs"
     />
     <line
       x1="0.796387"
       y1="9.24023"
       x2="2.78717"
       y2="9.24023"
-      :stroke="isActive ? '#2A7DD2' : '#808080'"
+      v-bind="$attrs"
     />
     <path
       d="M9.95386 6.23389L10.3283 9.53138C10.3409 9.64278 10.2538 9.74038 10.1417 9.74038C10.0379 9.74038 9.95386 9.65629 9.95386 9.55257V6.23389Z"
-      :fill="isActive ? '#2A7DD2' : '#808080'"
+      v-bind="$attrs"
     />
     <path
       d="M15.5281 9.35059L10.155 9.72614C10.0463 9.73374 9.95388 9.64759 9.95388 9.53859C9.95388 9.43476 10.0381 9.35059 10.1419 9.35059L15.5281 9.35059Z"
-      :fill="isActive ? '#2A7DD2' : '#808080'"
+      v-bind="$attrs"
     />
   </svg>
 </template>

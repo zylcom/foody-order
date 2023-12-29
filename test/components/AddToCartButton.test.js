@@ -41,8 +41,13 @@ describe("AddToCartButton.vue Test", () => {
   });
 
   it("should fire event 'addToCartHandler' when clicked and quantity props greater than 0", async () => {
-    await wrapper.setProps({ quantity: 1 });
+    const quantity = 1;
+    const product = { name: "Pizza", slug: "pizza" };
     const addToCartHandler = vi.spyOn(wrapper.vm, "addToCartHandler");
+
+    await wrapper.setProps({ quantity, product });
+
+    await nextTick();
 
     await wrapper.get("button").trigger("click");
 

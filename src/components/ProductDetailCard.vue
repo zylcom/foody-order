@@ -18,12 +18,12 @@ const formattedPrice = computed(() => formatNumberToIDR(props.product.price));
 const product = computed(() => props.product);
 const cartItem = computed(() => cartStore.getItem(product.value.slug));
 const formattedAverageRating = computed(() =>
-  formatFloatNumber(product.value.averageRating)
+  formatFloatNumber(product.value.averageRating),
 );
 
 const quantity = ref(cartItem.value?.quantity || 1);
 const total = computed(() =>
-  formatNumberToIDR(product.value.price * quantity.value)
+  formatNumberToIDR(product.value.price * quantity.value),
 );
 </script>
 
@@ -74,11 +74,22 @@ const total = computed(() =>
             <div
               class="flex w-fit rounded-2xl bg-mercury px-3 py-1 text-thamar-black"
             >
-              <button class="mr-3 block" @click="quantity--">-</button>
+              <button
+                class="mr-3 block"
+                @click="quantity < 1 ? quantity : quantity--"
+                :disabled="quantity < 1 ? true : false"
+              >
+                -
+              </button>
 
               <QuantityInput v-model:quantity="quantity" />
 
-              <button @click="quantity++">+</button>
+              <button
+                @click="quantity > 999 ? quantity : quantity++"
+                :disabled="quantity >= 999 ? true : false"
+              >
+                +
+              </button>
             </div>
           </div>
 

@@ -8,7 +8,7 @@ async function get(category) {
   category = validate(getTagsValidation, category);
 
   return axios
-    .get(`/tags/${category}`, { id: `tags-${category}` })
+    .get(`/tags?category=${category}`, { id: `tags-${category}` })
     .then((response) => {
       tagStore.set(response.data.data);
 

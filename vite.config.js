@@ -14,6 +14,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
+    reporters: ["verbose"],
     setupFiles: "./test/setup.js",
   },
 });

@@ -1,11 +1,12 @@
 <template>
   <svg
-    width="8"
-    height="1"
-    viewBox="0 0 8 1"
     fill="none"
+    stroke="currentColor"
+    stroke-width="1.5"
+    viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
   >
-    <line y1="0.5" x2="8" y2="0.5" stroke="#DE3905" />
+    <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6"></path>
   </svg>
 </template>

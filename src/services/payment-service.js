@@ -1,16 +1,15 @@
 import { axios, getAccessToken, getGuestUserId } from "../utils";
 
-async function get(sessionId) {
-  const authToken = getAccessToken();
+async function get(id) {
   const guestUserId = getGuestUserId();
+  const accessToken = getAccessToken();
 
   return axios
-    .get(
-      `/payment/${sessionId}${guestUserId ? "?guest_uid=" + guestUserId : ""}`,
-      {
-        headers: { Authorization: authToken },
-      }
-    )
+    .get(`/payment/${id}${guestUserId ? "?guest_uid=" + guestUserId : ""}`, {
+      headers: {
+        Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
+      },
+    })
     .then((response) => {
       return response;
     });

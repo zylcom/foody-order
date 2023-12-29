@@ -12,6 +12,7 @@ defineEmits(["update:description"]);
     class="w-full rounded-[10px] px-1 py-2 pr-10 focus:outline-none focus:ring-0"
     :value="description"
     @input="$emit('update:description', $event.target.value)"
+    autofocus
   />
 
   <button

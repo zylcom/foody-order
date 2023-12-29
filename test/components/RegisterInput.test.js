@@ -1,6 +1,5 @@
 import { mount } from "@vue/test-utils";
 import RegisterInput from "@/components/RegisterInput.vue";
-import { VueQueryPlugin } from "@tanstack/vue-query";
 
 describe("RegisterInput.vue Test", () => {
   const name = "Test Register";
@@ -10,7 +9,6 @@ describe("RegisterInput.vue Test", () => {
   const wrapper = mount(RegisterInput, {
     global: {
       components: { "vue-tel-input": { template: "<div></div>" } },
-      plugins: [VueQueryPlugin],
     },
   });
 

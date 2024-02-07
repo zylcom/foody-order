@@ -1,13 +1,14 @@
 <script setup>
 import { computed, ref, watch } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useToast } from "vue-toast-notification";
 import IconLoading from "../components/icons/IconLoading.vue";
 import userService from "../services/user-service";
 import { allStore } from "../stores";
 import { saveAccessToken } from "../utils";
 
-const route = useRouter();
+const router = useRouter();
+const route = useRoute();
 const username = ref("");
 const password = ref("");
 
@@ -25,8 +26,6 @@ async function onSubmitHandler() {
       username: username.value,
       password: password.value,
     });
-
-    console.log(result.data);
 
     saveAccessToken(result.data.data.token);
 
@@ -51,10 +50,8 @@ async function onSubmitHandler() {
 }
 
 watch(authUser, () => {
-  console.log(authUser.value);
-
   if (authUser.value) {
-    route.push({ path: "/" });
+    router.push({ path: route.query.redirect });
   }
 });
 

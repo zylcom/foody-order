@@ -47,6 +47,13 @@ async function checkoutHandler() {
   window.snap.show();
 
   try {
+    const validOrderDetails = validate(
+      orderDetailsValidation,
+      orderDetails.value,
+    );
+
+    localStorage.setItem("order_details", JSON.stringify(validOrderDetails));
+
     const result = await orderService.create({
       cart: myCart.value,
       ...orderDetails.value,
@@ -54,7 +61,6 @@ async function checkoutHandler() {
 
     window.snap.pay(result.transactionToken, {
       onSuccess: async function (result) {
-        console.log(result);
         console.log("success");
 
         await cartStore.$reset();
@@ -62,25 +68,18 @@ async function checkoutHandler() {
         window.location.href = `/payment/${result.transaction_id}`;
       },
       onPending: function (result) {
-        console.log(result);
         console.log("pending");
 
         window.location.href = `/order/${result.order_id}`;
       },
-      onError: function (result) {
-        console.log(result);
+      onError: function () {
         console.log("error");
       },
       onClose: function () {
-        window.location.href = `/order/${result.order.id}`;
-
-        console.log(result.order);
         console.log("customer closed the popup without finishing the payment");
       },
     });
   } catch (error) {
-    console.error(error);
-
     window.snap.hide();
 
     $toast.error("Something went wrong. Try again later.", { position: "top" });

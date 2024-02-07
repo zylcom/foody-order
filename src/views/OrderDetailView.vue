@@ -175,16 +175,20 @@ onMounted(async () => {
       </ul>
 
       <div
-        class="mb-4 flex w-full items-center justify-between gap-x-4 border-b border-dashed py-2 text-sm"
+        class="grid w-full grid-cols-6 items-center gap-x-4 border-b border-dashed py-2 text-sm hover:bg-mercury"
       >
-        <span class="truncate">Delivery Cost</span>
+        <span class="col-span-3 truncate">Delivery Cost</span>
 
-        <span class="font-medium">
+        <span class="mr-4 whitespace-nowrap">Qty: 1</span>
+
+        <span
+          class="col-span-2 overflow-hidden truncate text-right font-medium"
+        >
           {{ formatNumberToIDR(order.shipment.cost) }}
         </span>
       </div>
 
-      <div class="flex justify-end gap-x-2 text-sm">
+      <div class="mt-4 flex justify-end gap-x-2 text-sm">
         <span class="whitespace-nowrap uppercase">Total :</span>
         <span class="font-medium">
           {{ formatNumberToIDR(order.total) }}

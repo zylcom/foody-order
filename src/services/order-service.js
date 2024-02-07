@@ -93,4 +93,16 @@ async function cancel(orderId) {
     });
 }
 
-export default { create, checkout, get, cancel };
+async function listOrder() {
+  const guestUserId = getGuestUserId();
+
+  return axios
+    .get(`/orders${guestUserId ? "?guest_uid=" + guestUserId : ""}`, {
+      headers: {
+        Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
+      },
+    })
+    .then((response) => response.data.data);
+}
+
+export default { create, checkout, get, cancel, listOrder };
